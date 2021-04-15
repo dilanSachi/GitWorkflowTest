@@ -25,8 +25,8 @@ subprojects {
                 name = "GitHubPackages"
                 url = uri("https://maven.pkg.github.com/dilansachi/GitWorkflowTest")
                 credentials {
-                    username = project.findProperty("gpr.user") ?: System.getenv("dilansachi")
-                    password = project.findProperty("gpr.key") ?: System.getenv("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")
+                    username = System.getenv("GITHUB_ACTOR")
+                    password = System.getenv("GITHUB_TOKEN")
                 }
             }
         }
