@@ -31,8 +31,9 @@ subprojects {
             }
         }
         publications {
-            gpr(MavenPublication) {
-                from(components.java)
+            create<MavenPublication>("default") {
+                from(components["java"])
+                // Include any other artifacts here, like javadocs
             }
         }
     }
