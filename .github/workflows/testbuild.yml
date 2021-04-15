@@ -14,7 +14,7 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: 11
-      - run: java -cp java App
+     # - run: java -cp java App
 
   publish-gpr:
     needs: build
