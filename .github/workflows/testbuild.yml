@@ -5,19 +5,7 @@ on:
     types: [created]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Java
-        uses: actions/setup-java@v2.0.0
-        with:
-          distribution: 'adopt'
-          java-version: 11
-      - run: java -cp java GitWorkflowTest.app.App
-
   publish-gpr:
-    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -25,6 +13,13 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: 11
+      - shell: bash
+        env:
+          SUPER_SECRET: ${{ secrets.GITHUB_TOKEN }}
+          ACTOR_SECRET: ${{secrets.GITHUB_ACTOR}}
+        run: |
+          echo "$SUPER_SECRET"|
+          echo "$ACTOR_SECRET"
       - name: Publish package
         run: gradle publish
         env:
