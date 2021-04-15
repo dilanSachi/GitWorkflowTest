@@ -1,8 +1,6 @@
 name: testbuild
 
-on:
-  release:
-    types: [created]
+on: [push]
 
 jobs:
   publish-gpr:
