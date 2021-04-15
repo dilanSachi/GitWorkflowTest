@@ -13,13 +13,6 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: 11
-      - shell: bash
-        env:
-          SUPER_SECRET: ${{ secrets.GITHUB_TOKEN }}
-          ACTOR_SECRET: ${{secrets.GITHUB_ACTOR}}
-        run: |
-          echo "$SUPER_SECRET"|
-          echo "$ACTOR_SECRET"
       - name: Publish package
         run: gradle publish
         env:
