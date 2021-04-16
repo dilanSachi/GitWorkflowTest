@@ -10,11 +10,8 @@ jobs:
   delete:
     runs-on: ubuntu-latest
     steps:
-      - uses: octokit/request-action@v2.x
-        id: update_check_run
-        with:
-          route: DELETE /user/packages/maven/{package_name}
-          package_name: GitWorkflowTestv6.app
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+      - name: Get package version ids
+        run: |
+          curl -H "Authorization: bearer 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" -X POST -d '{"query":"query{repository(name:\"GitWorkflowTest\",owner:\"dilanSachi\"){packages(last:10){edges{node{id,name,versions(first:10){edges{node{id}}}}}}}}"}' --url https://api.github.com/graphql -o /tmp/response.json
+      - name: Display data
+        run: "cat /tmp/response.json"
