@@ -12,6 +12,6 @@ jobs:
     steps:
       - name: Get package version ids
         run: |
-          curl -H "Authorization: bearer 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" -X POST -d '{"query":"query{repository(name:\"GitWorkflowTest\",owner:\"dilanSachi\"){packages(last:10){edges{node{id,name,versions(first:10){edges{node{id}}}}}}}}"}' --url https://api.github.com/graphql -o /tmp/response.json
+          curl -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" -X POST -d '{"query":"query{repository(name:\"GitWorkflowTest\",owner:\"dilanSachi\"){packages(last:10){edges{node{id,name,versions(first:10){edges{node{id}}}}}}}}"}' --url https://api.github.com/graphql -o /tmp/response.json
       - name: Display data
         run: "cat /tmp/response.json"
