@@ -10,6 +10,11 @@ jobs:
   delete:
     runs-on: ubuntu-latest
     steps:
-      - name: Delete Package Versions
-        uses: actions/delete-package-versions@v1.0.3
+      - uses: octokit/request-action@v2.x
+        id: update_check_run
+        with:
+          route: DELETE /user/packages/maven/{package_name}
+          package_name: GitWorkflowTestv6.app
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
