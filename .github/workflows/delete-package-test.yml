@@ -40,8 +40,10 @@ jobs:
         run: printf "::set-output name=id::%s" $(cat /tmp/release.json)
       - name: show in screen
         run: "echo ${{steps.release.outputs.id}}"
-#       - name: Delete Selected Package
-#         uses: actions/delete-package-versions@v1.0.3
-# #         if: steps.release.outputs.id != ''
-#         with:
-#           package-version-ids: MDE0OlBhY2thZ2VWZXJzaW9uODUxNDE1Mw==
+      - name: Delete Selected Package
+        uses: actions/delete-package-versions@v1.0.3
+        if: steps.release.outputs.id != ''
+        with:
+          package-version-ids: ${{ steps.release.outputs.id }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
