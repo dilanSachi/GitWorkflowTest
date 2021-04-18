@@ -37,13 +37,14 @@ jobs:
         id: release
         run: "cat /tmp/release.json"
       - name: print
+        id: setid
         run: printf "::set-output name=id::%s" $(cat /tmp/release.json)
       - name: show in screen
-        run: "echo ${{steps.release.outputs.id}}"
+        run: "echo ${{steps.setid.outputs.id}}"
       - name: Delete Selected Package
         uses: actions/delete-package-versions@v1.0.3
-        if: steps.release.outputs.id != ''
+        if: steps.setid.outputs.id != ''
         with:
-          package-version-ids: ${{ steps.release.outputs.id }}
+          package-version-ids: ${{ steps.setid.outputs.id }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
