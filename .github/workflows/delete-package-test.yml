@@ -35,8 +35,8 @@ jobs:
         run: "jq '.data.repository.packages.edges[] | select(.node.name==\"${{ github.event.inputs.package }}\")|.node.versions.edges[]|select(.node.version==\"${{ github.event.inputs.version }}\")|.node.id' /tmp/response.json > /tmp/release.json"
       - name: Show Selected Package
         id: release
-        run: "cat /tmp/release.json"
-#         run: printf "::set-output name=id::%s" $(cat /tmp/release.json)
+#         run: "cat /tmp/release.json"
+        run: printf "::set-output name=id::%s" $(cat /tmp/release.json)
 #       - name: Delete Selected Package
 #         uses: actions/delete-package-versions@v1.0.3
 # #         if: steps.release.outputs.id != ''
