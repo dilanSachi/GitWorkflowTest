@@ -32,7 +32,7 @@ jobs:
       - name: Display data
         run: "cat /tmp/response.json"
       - name: Filter Packages
-        run: "jq '.data.repository.packages.edges[] | select(.node.name==\"${{ github.event.inputs.package }}\")|.node.versions.edges[]|select(.node.version==\"${{ github.event.inputs.version }}\")|.node.id' /tmp/response.json > /tmp/release.json"
+        run: "cat /tmp/response.json | jq -r '.data.repository.packages.edges[] | select(.node.name==\"${{ github.event.inputs.package }}\")|.node.versions.edges[]|select(.node.version==\"${{ github.event.inputs.version }}\")|.node.id' > /tmp/release.json"
       - name: Show Selected Package
         id: release
         run: "cat /tmp/release.json"
