@@ -46,6 +46,6 @@ jobs:
         if: steps.setid.outputs.id != ''
         with:
           package-version-ids: ${{ steps.setid.outputs.id }}
-          token: ${{ secrets.GITHUB_PAT }}
+          token: ${{ secrets.GIT_PAT }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
