@@ -31,11 +31,11 @@ jobs:
         run: echo ${{github.actor}}
       - name: Read access list
         run: "cat ./.github/workflows/UsersWithPackageDeletionAccess.json | jq -r '.usernames[]|select(.username==\"${{github.actor}}\").username' > /tmp/auth-user.json"
-      - name: Read access list
+      - name: Set authorized username
         id: setUname
         run: printf "::set-output name=foundUname::%s" $(cat /tmp/auth-user.json)
-        if: steps.setUname.outputs.foundUname != ''
       - name: Get package version ids
+        if: steps.setUname.outputs.foundUname != ''
         run: |
           curl -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" -X POST -d '{"query":"query{repository(name:\"${{ github.event.inputs.repo }}\",owner:\"${{ github.event.inputs.owner }}\"){packages(names:\"${{ github.event.inputs.package }}\",first:10){edges{node{id,name,versions(first:100){edges{node{id,version}}}}}}}}"}' --url https://api.github.com/graphql -o /tmp/version-ids.json
       - name: Display data
