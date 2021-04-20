@@ -37,17 +37,17 @@ jobs:
       - name: Get package version ids
 #        if: steps.setUname.outputs.foundUname != ''
         run: |
-          curl -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" -X POST -d '{"query":"query{organization(login:\"ballerina-platform\"){repository(name:\"${{ github.event.inputs.repo }}\"){packages(names:\"${{ github.event.inputs.package }}\",first:1){edges{node{version(version:\"${{ github.event.inputs.version }}\"){id}}}}}}}"}' --url https://api.github.com/graphql -o /tmp/version-ids.json
+          curl -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" -X POST -d '{"query":"query{organization(login:\"ballerina-platform\"){repository(name:\"${{ github.event.inputs.repo }}\"){packages(names:\"${{ github.event.inputs.package }}\",first:1){edges{node{version(version:\"${{ github.event.inputs.version }}\"){id}}}}}}}"}' --url https://api.github.com/graphql -o /tmp/version-id.json
       - name: Display data
-        run: "cat /tmp/version-ids.json"
+        run: "cat /tmp/version-id.json"
       - name: Filter packages
 #        if: steps.setUname.outputs.foundUname != ''
-        run: "cat /tmp/version-ids.json | jq -r '.data.organization.repository.packages.edges[0].node.version.id' > /tmp/version-id.json"
+        run: "cat /tmp/version-ids.json | jq -r '.data.organization.repository.packages.edges[0].node.version.id' > /tmp/filtered-id.json"
       - name: Show Selected Package
-        run: "cat /tmp/version-id.json"
+        run: "cat /tmp/filtered-id.json"
       - name: Set version ID
         id: setid
 #        if: steps.setUname.outputs.foundUname != ''
-        run: printf "::set-output name=versionId::%s" $(cat /tmp/version-ids.json)
+        run: printf "::set-output name=versionId::%s" $(cat /tmp/filtered-id.json)
       - name: show in screen
         run: "echo ${{steps.setid.outputs.versionId}}"
