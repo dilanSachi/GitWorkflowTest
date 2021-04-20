@@ -42,7 +42,7 @@ jobs:
         run: "cat /tmp/version-id.json"
       - name: Filter packages
 #        if: steps.setUname.outputs.foundUname != ''
-        run: "cat /tmp/version-ids.json | jq -r '.data.organization.repository.packages.edges[0].node.version.id' > /tmp/filtered-id.json"
+        run: "cat /tmp/version-id.json | jq -r '.data.organization.repository.packages.edges[0].node.version.id' > /tmp/filtered-id.json"
       - name: Show Selected Package
         run: "cat /tmp/filtered-id.json"
       - name: Set version ID
