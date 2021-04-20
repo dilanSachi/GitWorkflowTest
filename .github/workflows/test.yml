@@ -11,11 +11,8 @@ jobs:
       - uses: actions/checkout@v2.1.0
       - name: Show Username
         run: echo ${{github.actor}}
-      - name: test
-        run: "cat ./.github/workflows/UserWithPackageDeletionAccess.json | jq -r '.usernames[]|select(.username==\"${{github.actor}}\").username' > /tmp/auth-user.json"
-#      - name: Read access list
-#        id: setUname
-#        run: printf "::set-output name:foundUname" $("cat ./.github/workflows/UserWithPackageDeletionAccess.json | jq -r '.usernames[]|select(.username==\"${{github.actor}}\").username'")
+      - name: Read access list
+        run: "cat ./.github/workflows/UsersWithPackageDeletionAccess.json | jq -r '.usernames[]|select(.username==\"${{github.actor}}\").username' > /tmp/auth-user.json"
       - name: Read access list
         id: setUname
         run: printf "::set-output name=foundUname::%s" $(cat /tmp/auth-user.json)
