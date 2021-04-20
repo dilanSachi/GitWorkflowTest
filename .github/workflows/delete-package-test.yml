@@ -51,7 +51,7 @@ jobs:
 #        run: "echo ${{steps.setid.outputs.versionId}}"
       - name: Delete selected package
         uses: actions/delete-package-versions@v1.0.3
-        if: steps.setid.outputs.versionId != ''
+        if: steps.setUname.outputs.foundUname != '' && steps.setid.outputs.versionId != ''
         with:
           package-version-ids: ${{ steps.setid.outputs.versionId }}
           token: ${{ secrets.GIT_PAT }}
