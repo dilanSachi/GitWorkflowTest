@@ -12,9 +12,18 @@ jobs:
       - name: Show Username
         run: echo ${{github.actor}}
       - name: test
-        run: "cat ./.github/workflows/UserWithPackageDeletionAccess.json | jq -r '.usernames[]|select(.username==\"${{github.actor}}\").username'"
+        run: "cat ./.github/workflows/UserWithPackageDeletionAccess.json | jq -r '.usernames[]|select(.username==\"${{github.actor}}\").username' > /tmp/auth-user.json"
 #      - name: Read access list
 #        id: setUname
 #        run: printf "::set-output name:foundUname" $("cat ./.github/workflows/UserWithPackageDeletionAccess.json | jq -r '.usernames[]|select(.username==\"${{github.actor}}\").username'")
+      - name: Read access list
+        id: setUname
+        run: printf "::set-output name=foundUname::%s" $(cat /tmp/auth-user.json)
       - name: Print found uname
         run: "echo ${{steps.setUname.outputs.foundUname}}"
+#      - name: Delete Selected Package
+#        uses: actions/delete-package-versions@v1.0.3
+#        if: steps.setid.outputs.id != ''
+#        with:
+#          package-version-ids: ${{ steps.setid.outputs.id }}
+#          token: ${{ secrets.GIT_PAT }}
