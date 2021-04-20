@@ -27,34 +27,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.1.0
-      - name: Show Username
+      - name: Show username
         run: echo ${{github.actor}}
       - name: Read access list
         run: "cat ./.github/workflows/UsersWithPackageDeletionAccess.json | jq -r '.usernames[]|select(.username==\"${{github.actor}}\").username' > /tmp/auth-user.json"
       - name: Set authorized username
         id: setUname
         run: printf "::set-output name=foundUname::%s" $(cat /tmp/auth-user.json)
-      if: steps.setUname.outputs.foundUname != ''
       - name: Get package version ids
+        if: steps.setUname.outputs.foundUname != ''
         run: |
           curl -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" -X POST -d '{"query":"query{repository(name:\"${{ github.event.inputs.repo }}\",owner:\"${{ github.event.inputs.owner }}\"){packages(names:\"${{ github.event.inputs.package }}\",first:10){edges{node{id,name,versions(first:100){edges{node{id,version}}}}}}}}"}' --url https://api.github.com/graphql -o /tmp/version-ids.json
-      - name: Display data
-        run: "cat /tmp/version-ids.json"
-      - name: Filter Packages
+#      - name: Display data
+#        run: "cat /tmp/version-ids.json"
+      - name: Filter packages
         run: "cat /tmp/version-ids.json | jq -r '.data.repository.packages.edges[] | select(.node.name==\"${{ github.event.inputs.package }}\")|.node.versions.edges[]|select(.node.version==\"${{ github.event.inputs.version }}\")|.node.id' > /tmp/version-id.json"
-      - name: Show Selected Package
-        id: release
-        run: "cat /tmp/version-id.json"
-      - name: print
+#      - name: Show Selected Package
+#        run: "cat /tmp/version-id.json"
+      - name: Set version ID
         id: setid
-        run: printf "::set-output name=id::%s" $(cat /tmp/version-id.json)
-      - name: show in screen
-        run: "echo ${{steps.setid.outputs.id}}"
-      - name: Delete Selected Package
+        run: printf "::set-output name=versionId::%s" $(cat /tmp/version-id.json)
+#      - name: show in screen
+#        run: "echo ${{steps.setid.outputs.versionId}}"
+      - name: Delete selected package
         uses: actions/delete-package-versions@v1.0.3
-        if: steps.setid.outputs.id != ''
+        if: steps.setid.outputs.versionId != ''
         with:
-          package-version-ids: ${{ steps.setid.outputs.id }}
+          package-version-ids: ${{ steps.setid.outputs.versionId }}
           token: ${{ secrets.GIT_PAT }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
