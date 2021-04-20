@@ -9,11 +9,11 @@ on:
         owner:
           description: 'Repo Owner'     
           required: true
-          default: 'dilanSachi'
+          default: 'ballerina-platform'
         repo:
           description: 'Repository'     
           required: true
-          default: 'GitWorkflowTest'
+          default: 'ballerina-lang'
         package:
           description: 'Specific package'
           required: true
@@ -44,10 +44,10 @@ jobs:
         if: steps.setUname.outputs.foundUname != ''
         run: "cat /tmp/version-ids.json | jq -r '.data.organization.repository.packages.edges[0].node.version.id' > /tmp/version-id.json"
       - name: Show Selected Package
-        run: "cat /tmp/version-id.json"
+        run: "cat /tmp/version-ids.json"
       - name: Set version ID
         id: setid
 #        if: steps.setUname.outputs.foundUname != ''
-        run: printf "::set-output name=versionId::%s" $(cat /tmp/version-id.json)
+        run: printf "::set-output name=versionId::%s" $(cat /tmp/version-ids.json)
       - name: show in screen
         run: "echo ${{steps.setid.outputs.versionId}}"
