@@ -10,3 +10,8 @@ jobs:
     steps:
       - name: Show Username
         run: echo ${{github.actor}}
+      - name: Read access list
+        id: setUname
+        run: printf "::set-output name:foundUname" $("cat ./UserWithPackageDeletionAccess.json | jq -r '.usernames[]|select(.username==\"${{github.actor}}\").username'")
+      - name: Print found uname
+        run: "echo ${{steps.setUname.outputs.foundUname}}"
