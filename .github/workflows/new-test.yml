@@ -37,8 +37,7 @@ jobs:
       - name: Get package version ids
 #        if: steps.setUname.outputs.foundUname != ''
         run: |
-#          curl -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" -X POST -d '{"query":"query{repository(name:\"${{ github.event.inputs.repo }}\",owner:\"${{ github.event.inputs.owner }}\"){packages(names:\"${{ github.event.inputs.package }}\",first:10){edges{node{id,name,versions(first:100){edges{node{id,version}}}}}}}}"}' --url https://api.github.com/graphql -o /tmp/version-ids.json
-        curl -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" -X POST -d '{"query":"query{organization(login:\"ballerina-platform\"){repository(name:\"${{ github.event.inputs.repo }}\"){packages(names:\"${{ github.event.inputs.package }}\",first:1){edges{node{version(version:\"${{ github.event.inputs.version }}\"){id}}}}}}}"}' --url https://api.github.com/graphql -o /tmp/version-ids.json
+          curl -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" -X POST -d '{"query":"query{organization(login:\"ballerina-platform\"){repository(name:\"${{ github.event.inputs.repo }}\"){packages(names:\"${{ github.event.inputs.package }}\",first:1){edges{node{version(version:\"${{ github.event.inputs.version }}\"){id}}}}}}}"}' --url https://api.github.com/graphql -o /tmp/version-ids.json
       - name: Display data
         run: "cat /tmp/version-ids.json"
       - name: Filter packages
