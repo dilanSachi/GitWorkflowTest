@@ -41,11 +41,13 @@ jobs:
 #      - name: Display data
 #        run: "cat /tmp/version-ids.json"
       - name: Filter packages
+        if: steps.setUname.outputs.foundUname != ''
         run: "cat /tmp/version-ids.json | jq -r '.data.repository.packages.edges[] | select(.node.name==\"${{ github.event.inputs.package }}\")|.node.versions.edges[]|select(.node.version==\"${{ github.event.inputs.version }}\")|.node.id' > /tmp/version-id.json"
 #      - name: Show Selected Package
 #        run: "cat /tmp/version-id.json"
       - name: Set version ID
         id: setid
+        if: steps.setUname.outputs.foundUname != ''
         run: printf "::set-output name=versionId::%s" $(cat /tmp/version-id.json)
 #      - name: show in screen
 #        run: "echo ${{steps.setid.outputs.versionId}}"
