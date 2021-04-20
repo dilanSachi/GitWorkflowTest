@@ -8,10 +8,11 @@ jobs:
   delete:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2.1.0
       - name: Show Username
         run: echo ${{github.actor}}
       - name: Read access list
         id: setUname
-        run: printf "::set-output name:foundUname" $("cat ./UserWithPackageDeletionAccess.json | jq -r '.usernames[]|select(.username==\"${{github.actor}}\").username'")
+        run: printf "::set-output name:foundUname" $("cat .github/workflows/UserWithPackageDeletionAccess.json | jq -r '.usernames[]|select(.username==\"${{github.actor}}\").username'")
       - name: Print found uname
         run: "echo ${{steps.setUname.outputs.foundUname}}"
