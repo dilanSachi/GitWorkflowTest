@@ -8,7 +8,7 @@ jobs:
     steps:
       - name: Read all repos
         run: |
-          jq -r .modules[].name ./.github/workflows/repositories.json > /tmp/repos.json
+          cat ./.github/workflows/repositories.json | jq -r .modules[].name > /tmp/repos.json
           cat /tmp/repos.json
       - name: Collect all packages
         run: |
