@@ -22,9 +22,7 @@ jobs:
           echo test, and deploy your project.
       - name: Run while
         run: |
-          $x = 5
-          while(($x > 1))
+          for i in 1 2 3 4 5
           do
-            echo $x
-            ((--$x))
+            echo $i
           done
