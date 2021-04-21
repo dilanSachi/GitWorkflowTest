@@ -26,5 +26,5 @@ jobs:
           while(($x > 1))
           do
             echo $x
-            ((--x))
+            ((--$x))
           done
