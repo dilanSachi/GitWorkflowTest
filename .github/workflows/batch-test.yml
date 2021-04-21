@@ -22,7 +22,5 @@ jobs:
           echo test, and deploy your project.
       - name: Run while
         run: |
-          for i in 1 2 3 4 5
-          do
-            echo $i
-          done
+          curl -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" -X POST -d '{"query":"query{repository(name:\"ballerina-lang\",owner:\"ballerina-platform\"){packages(first:100,orderBy:{field:CREATED_AT,direction:ASC}, after:\"\"){nodes{id,name},pageInfo{endCursor,hasNextPage}}}}"}' --url 'https://api.github.com/graphql' -o /tmp/response.json
+          cat /tmp/response.json
