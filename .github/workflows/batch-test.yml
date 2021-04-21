@@ -13,9 +13,53 @@ jobs:
           cat /tmp/repos.json
       - name: Collect all packages
         run: |
-          key=""
-          x="true"
-          while ("$x" != "false");do curl -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" -X POST -d '{"query":"query{repository(name:\"ballerina-lang\",owner:\"ballerina-platform\"){packages(first:100,orderBy:{field:CREATED_AT,direction:ASC}, after:\"'$key'\"){nodes{id,name},pageInfo{endCursor,hasNextPage}}}}"}' --url 'https://api.github.com/graphql' -o /tmp/response.json;key=$(jq -r .data.repository.packages.pageInfo.endCursor /tmp/response.json);jq -r .data.repository.packages.nodes[].name /tmp/response.json >> /tmp/packages.json;x=$(jq -r .data.repository.packages.pageInfo.hasNextPage /tmp/response.json);done;
-      - name: Collect package versions
-        run: |
-          cat /tmp/packages.json
+          function getPackageVersionsofRepos () {
+            local pagination="true"
+            if [ -f "/tmp/package-versions.json" ]; then
+             rm "/tmp/package-versions.json"
+            fi
+            if [ -f "/tmp/versions-to-delete.json" ]; then
+             rm "/tmp/versions-to-delete.json"
+            fi
+            curl -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" -X POST -d '{"query":"query{repository(name:\"'$1'\",owner:\"ballerina-platform\"){packages(first:1,names:\"'$2'\"){nodes{versions(first:100,orderBy:{direction:ASC,field:CREATED_AT}){pageInfo{endCursor,hasNextPage},edges{node{statistics{downloadsTotalCount},id,version,files(first:1,orderBy:{direction:DESC,field:CREATED_AT}){nodes{updatedAt,name}}}}}}}}}"}' --url 'https://api.github.com/graphql' -o /tmp/package-versions.json
+            local cursor=$(jq -r .data.repository.packages.nodes[].versions.pageInfo.endCursor /tmp/package-versions.json)
+            local pagination=$(jq -r .data.repository.packages.nodes[].versions.pageInfo.hasNextPage /tmp/package-versions.json)
+            jq -r '.data.repository.packages.nodes[].versions.edges[]|select ((.node.statistics.downloadsTotalCount!=0) and (.node.files.nodes[0].updatedAt<="2021-11")).node.id' /tmp/package-versions.json >> /tmp/versions-to-delete.json
+            while ("$pagination" != "false")
+            do
+              curl -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" -X POST -d '{"query":"query{repository(name:\"'$1'\",owner:\"ballerina-platform\"){packages(first:1,names:\"'$2'\"){nodes{versions(first:100,orderBy:{direction:ASC,field:CREATED_AT},after:\"'$cursor'\"){pageInfo{endCursor,hasNextPage},edges{node{statistics{downloadsTotalCount},id,version,files(first:1,orderBy:{direction:DESC,field:CREATED_AT}){nodes{updatedAt,name}}}}}}}}}"}' --url 'https://api.github.com/graphql' -o /tmp/package-versions.json
+              cursor=$(jq -r .data.repository.packages.nodes[].versions.pageInfo.endCursor /tmp/package-versions.json)
+              pagination=$(jq -r .data.repository.packages.nodes[].versions.pageInfo.hasNextPage /tmp/package-versions.json)
+              jq -r '.data.repository.packages.nodes[].versions.edges[]|select ((.node.statistics.downloadsTotalCount!=0) and (.node.files.nodes[0].updatedAt<="2021-11")).node.id' /tmp/package-versions.json >> /tmp/versions-to-delete.json
+            done
+            cat /tmp/versions-to-delete.json | while read packageversionline
+            do
+              echo $packageversionline
+            done
+          }
+          function getPackagesofRepos () {
+            local cursor=""
+            local pagination="true"
+            if [ -f "/tmp/response.json" ]; then
+             rm "/tmp/response.json"
+            fi
+            if [ -f "/tmp/packages.json" ]; then
+             rm "/tmp/packages.json"
+            fi
+            while ("$pagination" != "false")
+            do
+              curl -H "Authorization: bearer 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" -X POST -d '{"query":"query{repository(name:\"'$1'\",owner:\"ballerina-platform\"){packages(first:100,orderBy:{field:CREATED_AT,direction:ASC}, after:\"'$cursor'\"){nodes{id,name},pageInfo{endCursor,hasNextPage}}}}"}' --url 'https://api.github.com/graphql' -o /tmp/response.json
+              cursor=$(jq -r .data.repository.packages.pageInfo.endCursor /tmp/response.json)
+              jq -r .data.repository.packages.nodes[].name /tmp/response.json >> /tmp/packages.json
+              pagination=$(jq -r .data.repository.packages.pageInfo.hasNextPage /tmp/response.json)
+            done
+
+            cat /tmp/packages.json | while read packageline
+            do
+              getPackageVersionsofRepos $1 $packageline
+            done
+          }
+          cat /tmp/repos.json | while read repoline
+          do
+            getPackagesofRepos $repoline
+          done
