@@ -46,6 +46,7 @@ jobs:
           }
 
           function getPackagesofRepos () {
+            echo "searching in " $1
             local cursor=""
             local pagination="true"
             if [ -f "/tmp/response.json" ]; then
