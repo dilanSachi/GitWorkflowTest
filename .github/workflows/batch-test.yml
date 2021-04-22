@@ -72,9 +72,9 @@ jobs:
           done
       - name: Show package file
         run: cat /tmp/allversions.txt
-#      - name: Delete packages
-#        uses: actions/delete-package-versions@v1.0.3
-#        if: $(cat /tmp/allversions.txt) != ''
-#        with:
-#          package-version-ids: $(cat /tmp/allversions.txt)
-#          token: ${{ secrets.GIT_PAT }}
+      - name: Delete packages
+        uses: actions/delete-package-versions@v1.0.3
+        if: $(cat /tmp/allversions.txt) != ''
+        with:
+          package-version-ids: $(cat /tmp/allversions.txt)
+          token: ${{ secrets.GIT_PAT }}
