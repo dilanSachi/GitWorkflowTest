@@ -35,7 +35,7 @@ jobs:
             done
             cat /tmp/versions-to-delete.json | while read packageversionline
             do
-              echo "$(cat /tmp/allversions.txt), ${packageversionline}" > /tmp/allversions.txt
+              curl -X POST -H "Accept: application/vnd.github.package-deletes-preview+json" -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" -d '{"query":"mutation { deletePackageVersion(input:{packageVersionId:\"'$packageversionline'\"}) { success }}"}' --url 'https://api.github.com/graphql'
             done
           }
 
@@ -70,16 +70,16 @@ jobs:
           do
             getPackagesofRepos "$repoline"
           done
-      - name: Show package file
-        id: setversions
-        run: |
-          cat /tmp/allversions.txt
-          ids=$(cat /tmp/allversions.txt)
-          printf "::set-output name=allversionIds::%s" ${ids:2}
-      - name: Delete packages
-#        uses: actions/delete-package-versions@v1.0.3
-#        if: steps.setversions.outputs.allversionIds != ''
-#        with:
-#          package-version-ids: ${{ steps.setversions.outputs.allversionIds }}
-#          token: ${{ secrets.GIT_PAT }}
-        run: echo ${{steps.setversions.outputs.allversionIds}}
+#      - name: Show package files
+#        id: setversions
+#        run: |
+#          cat /tmp/allversions.txt
+#          ids=$(cat /tmp/allversions.txt)
+#          printf "::set-output name=allversionIds::%s" ${ids:2}
+#      - name: Delete packages
+##        uses: actions/delete-package-versions@v1.0.3
+##        if: steps.setversions.outputs.allversionIds != ''
+##        with:
+##          package-version-ids: ${{ steps.setversions.outputs.allversionIds }}
+##          token: ${{ secrets.GIT_PAT }}
+#        run: echo ${{steps.setversions.outputs.allversionIds}}
