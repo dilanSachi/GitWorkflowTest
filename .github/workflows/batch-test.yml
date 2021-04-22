@@ -74,7 +74,6 @@ jobs:
           fi
           touch /tmp/allversions.txt
 
-#          getPackagesofRepos "ballerina-lang"
           cat /tmp/repos.json | while read repoline
           do
             getPackagesofRepos "$repoline"
