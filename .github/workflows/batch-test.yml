@@ -71,10 +71,14 @@ jobs:
             getPackagesofRepos "$repoline"
           done
       - name: Show package file
-        run: cat /tmp/allversions.txt
+        id: setversions
+        run: |
+          cat /tmp/allversions.txt
+          ids=$(cat /tmp/allversions.txt)
+          printf "::set-output name=allversionIds::%s" ${ids:1}
       - name: Delete packages
         uses: actions/delete-package-versions@v1.0.3
-        if: $(cat /tmp/allversions.txt) != ''
+        if: steps.setversions.outputs.allversionIds != ''
         with:
-          package-version-ids: ${$(cat /tmp/allversions.txt):1}
+          package-version-ids: ${{ steps.setversions.outputs.allversionIds }}
           token: ${{ secrets.GIT_PAT }}
