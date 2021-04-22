@@ -41,7 +41,7 @@ jobs:
             done
             cat /tmp/versions-to-delete.json | while read packageversionline
             do
-              echo $packageversionline
+              echo $1 $2 $packageversionline
             done
           }
 
