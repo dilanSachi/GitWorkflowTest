@@ -82,4 +82,4 @@ jobs:
 #        with:
 #          package-version-ids: ${{ steps.setversions.outputs.allversionIds }}
 #          token: ${{ secrets.GIT_PAT }}
-        run: echo ${steps.setversions.outputs.allversionIds}
+        run: echo ${{steps.setversions.outputs.allversionIds}}
