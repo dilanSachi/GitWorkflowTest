@@ -76,5 +76,5 @@ jobs:
         uses: actions/delete-package-versions@v1.0.3
         if: $(cat /tmp/allversions.txt) != ''
         with:
-          package-version-ids: $(cat /tmp/allversions.txt)
+          package-version-ids: ${$(cat /tmp/allversions.txt):1}
           token: ${{ secrets.GIT_PAT }}
