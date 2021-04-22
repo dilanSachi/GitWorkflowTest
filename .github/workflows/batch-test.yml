@@ -20,7 +20,7 @@ jobs:
             if [ -f "/tmp/versions-to-delete.json" ]; then
              rm "/tmp/versions-to-delete.json"
             fi
-            local monthago=$(date -d "$(date +%Y-%m-%d) -1 day" +%Y-%m-%d)
+            local monthago=$(date -d "$(date +%Y-%m-%d) +1 day" +%Y-%m-%d)
             echo $monthago
             curl -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" -X POST -d '{"query":"query{repository(name:\"'$1'\",owner:\"dilanSachi\"){packages(first:1,names:\"'$2'\"){nodes{versions(first:100,orderBy:{direction:ASC,field:CREATED_AT}){pageInfo{endCursor,hasNextPage},edges{node{statistics{downloadsTotalCount},id,version,files(first:1,orderBy:{direction:DESC,field:CREATED_AT}){nodes{updatedAt,name}}}}}}}}}"}' --url 'https://api.github.com/graphql' -o /tmp/package-versions.json
             local cursor=$(jq -r .data.repository.packages.nodes[].versions.pageInfo.endCursor /tmp/package-versions.json)
