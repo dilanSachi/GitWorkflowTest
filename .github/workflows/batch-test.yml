@@ -35,7 +35,7 @@ jobs:
             done
             cat /tmp/versions-to-delete.json | while read packageversionline
             do
-              echo "$(cat /tmp/allversions.txt),${packageversionline}" > /tmp/allversions.txt
+              echo "$(cat /tmp/allversions.txt), ${packageversionline}" > /tmp/allversions.txt
             done
           }
 
@@ -75,7 +75,7 @@ jobs:
         run: |
           cat /tmp/allversions.txt
           ids=$(cat /tmp/allversions.txt)
-          printf "::set-output name=allversionIds::%s" ${ids:1}
+          printf "::set-output name=allversionIds::%s" ${ids:2}
       - name: Delete packages
         uses: actions/delete-package-versions@v1.0.3
         if: steps.setversions.outputs.allversionIds != ''
