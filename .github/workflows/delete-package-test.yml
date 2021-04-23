@@ -30,7 +30,7 @@ jobs:
       - name: Show username
         run: echo ${{github.actor}}
       - name: Read access list
-        run: "cat ./.github/workflows/UsersWithPackageDeletionAccess.json | jq -r '.usernames[]|select(.username==\"${{github.actor}}\").username' > /tmp/auth-user.json"
+        run: "cat ./.github/workflows/package_delete_usernames.json| jq -r '.usernames[]|select(.username==\"${{github.actor}}\").username' > /tmp/auth-user.json"
       - name: Set authorized username
         id: setUname
         run: printf "::set-output name=foundUname::%s" $(cat /tmp/auth-user.json)
