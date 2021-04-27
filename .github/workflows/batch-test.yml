@@ -20,5 +20,5 @@ jobs:
         if: steps.setUname.outputs.foundUname != ''
         working-directory: ./.github/workflows
         run: |
-          chmod +x "./.github/workflows/delete-packages.sh"
+          chmod +x "./delete-packages.sh"
           ". delete-packages.sh"
