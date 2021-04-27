@@ -7,20 +7,20 @@ function getPackageVersionsofRepos () {
     rm "/tmp/versions-to-delete.json"
   fi
   local monthago=$(date -d "$(date +%Y-%m-%d) +1 month" +%Y-%m-%d)
-  curl -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" -X POST -d '{"query":"query{repository(name:\"'$1'\",owner:\"dilanSachi\"){packages(first:1,names:\"'$2'\"){nodes{versions(first:100,orderBy:{direction:ASC,field:CREATED_AT}){pageInfo{endCursor,hasNextPage},edges{node{statistics{downloadsTotalCount},id,version,files(first:1,orderBy:{direction:DESC,field:CREATED_AT}){nodes{updatedAt,name}}}}}}}}}"}' --url 'https://api.github.com/graphql' -o /tmp/package-versions.json
+  curl -H "Authorization: bearer $GITHUB_TOKEN" -X POST -d '{"query":"query{repository(name:\"'$1'\",owner:\"dilanSachi\"){packages(first:1,names:\"'$2'\"){nodes{versions(first:100,orderBy:{direction:ASC,field:CREATED_AT}){pageInfo{endCursor,hasNextPage},edges{node{statistics{downloadsTotalCount},id,version,files(first:1,orderBy:{direction:DESC,field:CREATED_AT}){nodes{updatedAt,name}}}}}}}}}"}' --url 'https://api.github.com/graphql' -o /tmp/package-versions.json
   local cursor=$(jq -r .data.repository.packages.nodes[].versions.pageInfo.endCursor /tmp/package-versions.json)
   local pagination=$(jq -r .data.repository.packages.nodes[].versions.pageInfo.hasNextPage /tmp/package-versions.json)
   jq -r '.data.repository.packages.nodes[].versions.edges[]|select ((.node.statistics.downloadsTotalCount==0) and (.node.files.nodes[0].updatedAt<="'$monthago'")).node.id' /tmp/package-versions.json >> /tmp/versions-to-delete.json
   while ("$pagination" != "false")
   do
-    curl -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" -X POST -d '{"query":"query{repository(name:\"'$1'\",owner:\"dilanSachi\"){packages(first:1,names:\"'$2'\"){nodes{versions(first:100,orderBy:{direction:ASC,field:CREATED_AT},after:\"'$cursor'\"){pageInfo{endCursor,hasNextPage},edges{node{statistics{downloadsTotalCount},id,version,files(first:1,orderBy:{direction:DESC,field:CREATED_AT}){nodes{updatedAt,name}}}}}}}}}"}' --url 'https://api.github.com/graphql' -o /tmp/package-versions.json
+    curl -H "Authorization: bearer $GITHUB_TOKEN" -X POST -d '{"query":"query{repository(name:\"'$1'\",owner:\"dilanSachi\"){packages(first:1,names:\"'$2'\"){nodes{versions(first:100,orderBy:{direction:ASC,field:CREATED_AT},after:\"'$cursor'\"){pageInfo{endCursor,hasNextPage},edges{node{statistics{downloadsTotalCount},id,version,files(first:1,orderBy:{direction:DESC,field:CREATED_AT}){nodes{updatedAt,name}}}}}}}}}"}' --url 'https://api.github.com/graphql' -o /tmp/package-versions.json
     cursor=$(jq -r .data.repository.packages.nodes[].versions.pageInfo.endCursor /tmp/package-versions.json)
     pagination=$(jq -r .data.repository.packages.nodes[].versions.pageInfo.hasNextPage /tmp/package-versions.json)
     jq -r '.data.repository.packages.nodes[].versions.edges[]|select ((.node.statistics.downloadsTotalCount==0) and (.node.files.nodes[0].updatedAt<="'$monthago'")).node.id' /tmp/package-versions.json >> /tmp/versions-to-delete.json
   done
   cat /tmp/versions-to-delete.json | while read packageversionline
   do
-    curl -X POST -H "Accept: application/vnd.github.package-deletes-preview+json" -H "Authorization: bearer ${{ secrets.GIT_PAT }}" -d '{"query":"mutation { deletePackageVersion(input:{packageVersionId:\"'$packageversionline'\"}) { success }}"}' --url 'https://api.github.com/graphql'
+    curl -X POST -H "Accept: application/vnd.github.package-deletes-preview+json" -H "Authorization: bearer $GIT_PAT" -d '{"query":"mutation { deletePackageVersion(input:{packageVersionId:\"'$packageversionline'\"}) { success }}"}' --url 'https://api.github.com/graphql'
   done
 }
 
