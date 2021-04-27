@@ -21,3 +21,6 @@ jobs:
         run: |
           chmod +x "./.github/workflows/delete-packages.sh"
           "./.github/workflows/delete-packages.sh"
+        env:
+          GIT_PAT: ${{secrets.GIT_PAT}}
+          GITHUB_TOKEN: ${{GITHUB_TOKEN}}
