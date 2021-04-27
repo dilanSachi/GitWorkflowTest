@@ -8,19 +8,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2.1.0
       - name: Read access list
-        run: "cat ./.github/workflows/package_delete_usernames.json | jq -r '.usernames[]|select(.username==\"${{github.actor}}\").username' > /tmp/auth-user.json"
+        run: "cat ./package_delete/package_delete_usernames.json | jq -r '.usernames[]|select(.username==\"${{github.actor}}\").username' > /tmp/auth-user.json"
       - name: Set authorized username
         id: setUname
         run: printf "::set-output name=foundUname::%s" $(cat /tmp/auth-user.json)
       - name: Read all repos
         if: steps.setUname.outputs.foundUname != ''
         run: |
-          jq -r .modules[].name ./.github/workflows/repositories.json > /tmp/repos.json
+          jq -r .modules[].name ./package_delete/repositories.json > /tmp/repos.json
       - name: Collect all packages
         if: steps.setUname.outputs.foundUname != ''
         run: |
-          chmod +x "./.github/workflows/delete-packages.sh"
-          "./.github/workflows/delete-packages.sh"
+          chmod +x "./package_delete/delete-packages.sh"
+          "./package_delete/delete-packages.sh"
         env:
           GIT_PAT: ${{secrets.GIT_PAT}}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
