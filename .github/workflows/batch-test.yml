@@ -23,4 +23,4 @@ jobs:
           "./.github/workflows/delete-packages.sh"
         env:
           GIT_PAT: ${{secrets.GIT_PAT}}
-          GITHUB_TOKEN: ${{GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
