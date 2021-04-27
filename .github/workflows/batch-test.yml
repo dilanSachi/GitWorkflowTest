@@ -19,4 +19,5 @@ jobs:
       - name: Collect all packages
         if: steps.setUname.outputs.foundUname != ''
         run: |
+          chmod +x "./.github/workflows/delete-packages.sh"
           "./.github/workflows/delete-packages.sh"
