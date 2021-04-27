@@ -35,7 +35,7 @@ function getPackagesofRepos () {
   fi
   while ("$pagination" != "false")
   do
-    curl -H "Authorization: bearer '$GITHUB_TOKEN'" -X POST -d '{"query":"query{repository(name:\"'$1'\",owner:\"dilanSachi\"){packages(first:100,orderBy:{field:CREATED_AT,direction:ASC}, after:\"'$cursor'\"){nodes{id,name},pageInfo{endCursor,hasNextPage}}}}"}' --url 'https://api.github.com/graphql' -o /tmp/response.json
+    curl -H "Authorization: bearer $GITHUB_TOKEN" -X POST -d '{"query":"query{repository(name:\"'$1'\",owner:\"dilanSachi\"){packages(first:100,orderBy:{field:CREATED_AT,direction:ASC}, after:\"'$cursor'\"){nodes{id,name},pageInfo{endCursor,hasNextPage}}}}"}' --url 'https://api.github.com/graphql' -o /tmp/response.json
     cursor=$(jq -r .data.repository.packages.pageInfo.endCursor /tmp/response.json)
     jq -r .data.repository.packages.nodes[].name /tmp/response.json >> /tmp/packages.json
     pagination=$(jq -r .data.repository.packages.pageInfo.hasNextPage /tmp/response.json)
