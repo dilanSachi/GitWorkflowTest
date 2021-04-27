@@ -18,7 +18,6 @@ jobs:
           jq -r .modules[].name ./.github/workflows/repositories.json > /tmp/repos.json
       - name: Collect all packages
         if: steps.setUname.outputs.foundUname != ''
-        working-directory: ./.github/workflows
         run: |
-          chmod +x "./delete-packages.sh"
-          ". delete-packages.sh"
+          chmod +x "./.github/workflows/delete-packages.sh"
+          "./.github/workflows/delete-packages.sh"
