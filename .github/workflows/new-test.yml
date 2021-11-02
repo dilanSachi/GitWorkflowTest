@@ -27,6 +27,8 @@ jobs:
       - uses: actions/checkout@v2.1.0
       - name: Show username
         run: echo ${{github.actor}}
+      - name: Show data
+        run: echo ${{github.event.inputs.repo}}
       - name: Read access list
         run: "cat ./.github/workflows/package_delete_usernames.json | jq -r '.usernames[]|select(.username==\"${{github.actor}}\").username' > /tmp/auth-user.json"
       - name: Set authorized username
