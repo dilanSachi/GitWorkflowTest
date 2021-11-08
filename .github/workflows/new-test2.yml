@@ -11,6 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Create pull request for new summary
-        run: gh pr create --title "[Automated] Update summary csv files" --body "Update summary csv files"
+        run: |
+          git config --global user.name dilanSachi
+          git config --global user.email dilansachinthanos@gmail.com
+          gh pr create --title "[Automated] Update summary csv files" --body "Update summary csv files"
         env:
           GITHUB_TOKEN: ${{ secrets.GIT_PAT }}
