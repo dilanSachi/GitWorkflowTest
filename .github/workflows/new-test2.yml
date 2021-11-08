@@ -12,9 +12,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Create pull request for new summary
         run: |
-          gh auth login
-          git config --global user.name dilanSachi
-          git config --global user.email dilansachinthanos@gmail.com
-          gh pr create --title "[Automated] Update summary csv files" --body "Update summary csv files"
+          gh auth login --with-token ${{ secrets.GIT_PAT }}
+          gh pr create --base master --title "[Automated] Update summary csv files" --body "Update summary csv files"
         env:
           GITHUB_TOKEN: ${{ secrets.GIT_PAT }}
