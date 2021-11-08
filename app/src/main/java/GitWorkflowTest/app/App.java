@@ -12,7 +12,7 @@ import static GitWorkflowTest.app.MessageUtils.getMessage;
 import org.apache.commons.text.WordUtils;
 
 public class App {
-    public static void main(String[] args) { //master
+    public static void main(String[] args) { //masterd
         LinkedList tokens;
         tokens = split(getMessage());
         String result = join(tokens);
