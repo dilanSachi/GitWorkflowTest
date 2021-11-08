@@ -13,4 +13,4 @@ jobs:
       - name: Create pull request for new summary
         run: gh pr create --title "[Automated] Update summary csv files" --body "Update summary csv files"
         env:
-          GITHUB_TOKEN: ${{ secrets.BALLERINA_BOT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GIT_PAT }}
