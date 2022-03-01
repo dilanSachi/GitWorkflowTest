@@ -52,8 +52,9 @@ jobs:
 #      - name: show in screen
 #        run: "echo ${{steps.setid.outputs.versionId}}"
       - name: Delete selected package
-        uses: actions/delete-package-versions@v1.0.3
         if: steps.setUname.outputs.foundUname != '' && steps.setid.outputs.versionId != ''
+        run: |
+          curl -X DELETE -H "Accept: application/vnd.github.v3+json" https://api.github.com/orgs/dilanSachi/packages/maven/GitWorkflowTest.app/versions/${{ steps.setid.outputs.versionId }}
         with:
           package-version-ids: ${{ steps.setid.outputs.versionId }}
           token: ${{ secrets.GIT_PAT }}
