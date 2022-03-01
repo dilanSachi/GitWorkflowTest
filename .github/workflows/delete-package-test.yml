@@ -54,6 +54,6 @@ jobs:
       - name: Delete selected package
         if: steps.setUname.outputs.foundUname != '' && steps.setid.outputs.versionId != ''
         run: |
-          curl -X DELETE -H "Accept: application/vnd.github.v3+json" https://api.github.com/orgs/dilanSachi/packages/maven/GitWorkflowTest.app/versions/${{ steps.setid.outputs.versionId }}
+          curl -X DELETE -H "Authorization: bearer ${{ secrets.GIT_PAT }}" -H "Accept: application/vnd.github.v3+json" https://api.github.com/orgs/dilanSachi/packages/maven/GitWorkflowTest.app/versions/${{ steps.setid.outputs.versionId }}
         env:
           GIT_PAT: ${{ secrets.GIT_PAT }}
