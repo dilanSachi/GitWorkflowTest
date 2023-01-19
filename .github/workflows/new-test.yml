@@ -19,6 +19,9 @@ on:
       version:
         description: 'Package version'
         required: true
+      patch:
+        description: 'Patch Version'
+        required: false
 
 jobs:
   delete:
